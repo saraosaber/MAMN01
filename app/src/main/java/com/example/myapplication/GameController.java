@@ -3,7 +3,7 @@ import java.util.concurrent.TimeUnit;
 
 public class GameController {
 
-    public static void main(String[] args) {
+    public GameController() {
         Player player = new Player();
         Obstacle obstacle = new Obstacle();
 
@@ -13,8 +13,6 @@ public class GameController {
         playerThread.start();
         obstacleThread.start();
     }
-
-
 
 
 }
