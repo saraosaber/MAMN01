@@ -1,22 +1,18 @@
 package com.example.myapplication;
-import android.content.Context;
-import android.hardware.SensorManager;
-
-import android.view.View;
-
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-
-import androidx.annotation.NonNull;
 
 // https://stackoverflow.com/questions/76882374/swipe-up-down-gesture-on-launcher-application
+
+import android.content.Context;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+
 public class InputHandler implements View.OnTouchListener {
 
     private final GestureDetector gestureDetector;
+    private static SwipeListener swipeListener;
 
     public InputHandler(Context context, GestureDetector gestureDetector) {
-        gestureDetector = new GestureDetector(context, new GestureListener());
-
         this.gestureDetector = gestureDetector;
     }
 
@@ -25,12 +21,21 @@ public class InputHandler implements View.OnTouchListener {
         return gestureDetector.onTouchEvent(event);
     }
 
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    public interface SwipeListener {
+        void onSwipeUp();
+        void onSwipeDown();
+    }
+
+    public void setSwipeListener(SwipeListener swipeListener) {
+        this.swipeListener = swipeListener;
+    }
+
+    static class GestureListener extends GestureDetector.SimpleOnGestureListener {
         private static final int SWIPE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
         @Override
-        public boolean onDown(@NonNull MotionEvent e) {
+        public boolean onDown(MotionEvent e) {
             return true;
         }
 
@@ -42,22 +47,18 @@ public class InputHandler implements View.OnTouchListener {
             if (Math.abs(diffY) > Math.abs(diffX)) {
                 if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
-                        onSwipeDown();
+                        if (swipeListener != null) {
+                            swipeListener.onSwipeDown();
+                        }
                     } else {
-                        onSwipeUp();
+                        if (swipeListener != null) {
+                            swipeListener.onSwipeUp();
+                        }
                     }
                     return true;
                 }
             }
             return false;
         }
-    }
-
-    public void onSwipeDown() {
-        System.out.println("Down!!!");
-    }
-
-    public void onSwipeUp() {
-        System.out.println("Up!!!");
     }
 }

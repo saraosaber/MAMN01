@@ -1,12 +1,18 @@
 package com.example.myapplication;
-import java.util.concurrent.TimeUnit;
+import com.example.myapplication.Player;
+import com.example.myapplication.Obstacle;
 
 public class GameController {
 
-    public GameController() {
-        Player player = new Player();
-        Obstacle obstacle = new Obstacle();
+    private final Player player;
+    private final Obstacle obstacle;
 
+    public GameController(Player player, Obstacle obstacle) {
+        this.player = player;
+        this.obstacle = obstacle;
+    }
+
+    public void start() {
         Thread playerThread = new Thread(player);
         Thread obstacleThread = new Thread(obstacle);
 
@@ -14,39 +20,10 @@ public class GameController {
         obstacleThread.start();
     }
 
-
-}
-
-class Player implements Runnable {
-    @Override
-    public void run() {
-        while (true) {
-            // Player logic goes here
-            System.out.println("Player thread is running");
-            try {
-                TimeUnit.MILLISECONDS.sleep(100); // Adjust as needed
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void stop() {
+        // Stop player and obstacle threads if needed
     }
 }
-
-class Obstacle implements Runnable {
-    @Override
-    public void run() {
-        while (true) {
-            // Obstacle logic goes here
-            System.out.println("Obstacle thread is running");
-            try {
-                TimeUnit.MILLISECONDS.sleep(200); // Adjust as needed
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-
 
 /*Inspirationskod från chattis
 import java.util.concurrent.TimeUnit;
