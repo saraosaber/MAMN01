@@ -17,12 +17,14 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
     public void onSwipeUp() {
         // Player reacts to swipe up event
         System.out.println("--- Player jumps! ---");
+        state = 1;
     }
 
     @Override
     public void onSwipeDown() {
         // Player reacts to swipe down event
         System.out.println("--- Player ducks! ---");
+        state = 2;
     }
 
     public void pause() {
@@ -51,5 +53,11 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
 
     public boolean isDucking() {
         return state == DUCKING;
+    }
+
+    public String getStateString() {
+        if(state == 0) return "Running";
+        if(state == 1) return "Jumping";
+        return "Ducking";
     }
 }

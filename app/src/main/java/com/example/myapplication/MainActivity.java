@@ -6,8 +6,6 @@ import android.view.GestureDetector;
 import android.widget.RelativeLayout;
 
 import com.example.myapplication.Player;
-import com.example.myapplication.Obstacle;
-
 
 public class MainActivity extends AppCompatActivity {
 
