@@ -4,9 +4,13 @@ import java.util.concurrent.TimeUnit;
 
 public class Player implements Runnable, InputHandler.SwipeListener  {
 
-    private boolean running = true;
+    private static final int RUNNING = 0;
+    private static final int JUMPING = 1;
+    private static final int DUCKING = 2;
+    private int state;
 
     public Player() {
+        state = RUNNING;
     }
 
     @Override
@@ -22,16 +26,14 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
     }
 
     public void pause() {
-        running = false;
     }
 
     public void resume() {
-        running = true;
     }
 
     @Override
     public void run() {
-        while (running) {
+        while (true) {
             // Player logic goes here
             System.out.println("Player thread is running");
             try {
@@ -41,5 +43,13 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isJumping() {
+        return state == JUMPING;
+    }
+
+    public boolean isDucking() {
+        return state == DUCKING;
     }
 }

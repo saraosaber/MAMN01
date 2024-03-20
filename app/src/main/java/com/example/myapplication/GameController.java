@@ -1,29 +1,33 @@
 package com.example.myapplication;
 import com.example.myapplication.Player;
-import com.example.myapplication.Obstacle;
+import com.example.myapplication.Obstacles;
 
 public class GameController {
 
-    private final Player player;
-    private final Obstacle obstacle;
+    private static Thread player;
 
-    public GameController(Player player, Obstacle obstacle) {
+    public GameController(Player player) {
         this.player = player;
-        this.obstacle = obstacle;
     }
 
     public void start() {
-        Thread playerThread = new Thread(player);
-        Thread obstacleThread = new Thread(obstacle);
+        Thread obstacles = new Obstacles();
 
-        playerThread.start();
-        obstacleThread.start();
+        // TO-DO skapa metod för att  köra intro
+
+        player.start();
+        obstacles.start(player);
+        /* TO-DO .await() till obstacles,
+        alltså när obstacle är "färdig = interrupt", stäng av player thread, sen anropas metoden för
+        gameOver() (ljud) */
+
+        
     }
 
     public void stop() {
         // Stop player and obstacle threads if needed
     }
-}
+} 
 
 /*Inspirationskod från chattis
 import java.util.concurrent.TimeUnit;

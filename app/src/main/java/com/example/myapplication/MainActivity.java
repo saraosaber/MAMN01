@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity {
 
     private InputHandler inputHandler;
     private Player player;
-    private Obstacle obstacle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         swipeAreaView.setOnTouchListener(inputHandler);
 
         // Initialize GameController with the Player and Obstacle instances
-        GameController gameController = new GameController(player, obstacle);
+        GameController gameController = new GameController(player);
         gameController.start();
     }
 
