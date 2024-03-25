@@ -12,10 +12,15 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
     private static final int DUCKING = 2;
     private int state;
     private boolean interrupted;
+    private SoundManager sm;
+    private int jump = 0;
+    private int duck = 1;
+    private int run = 5;
 
-    public Player() {
+    public Player(SoundManager sm) {
         state = RUNNING;
         interrupted = false;
+        this.sm = sm;
     }
 
     @Override
@@ -24,6 +29,7 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
         System.out.println("--- Player jumps! ---");
         if(!interrupted) {
             state = 2;
+            sm.playSound(jump);
             scheduler.schedule(() -> {
                 state = 0;
                 System.out.println("--- Player running! ---");
@@ -37,6 +43,7 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
         System.out.println("--- Player ducks! ---");
         if(!interrupted) {
             state = 2;
+            sm.playSound(duck);
             scheduler.schedule(() -> {
                 state = 0;
                 System.out.println("--- Player running! ---");

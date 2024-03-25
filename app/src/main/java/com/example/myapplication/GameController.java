@@ -8,11 +8,15 @@ public class GameController implements Runnable {
     private InputHandler inputHandler;
     private Player player;
     private static Thread playerThread;
+    private final SoundManager sm;
+    private final VibrationManager vm;
 
-    public GameController(MainActivity context) {
+    public GameController(MainActivity context, SoundManager sm, VibrationManager vm) {
+          this.sm = sm;
+          this.vm = vm;
 
           // Initialize the Player
-          player = new Player();
+          player = new Player(sm);
 
           // Initialize the InputHandler and set the SwipeListener
           // Initialize the GestureDetector
@@ -29,7 +33,7 @@ public class GameController implements Runnable {
 
     public void startGame() {
         playerThread = new Thread(player);
-        Thread obstaclesThread = new Thread(new Obstacles(player));
+        Thread obstaclesThread = new Thread(new Obstacles(player, sm, vm));
 
         //remove later (for  testing)
         System.out.println("--- Are you ready? ---");
@@ -65,6 +69,7 @@ public class GameController implements Runnable {
             e.printStackTrace();
         }
         playerThread.interrupt();
+        player.pause();
 
         System.out.println("Game over...");
     }

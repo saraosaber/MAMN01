@@ -6,9 +6,13 @@ import java.util.concurrent.TimeUnit;
 public class Obstacles implements Runnable {
 
     private Player player;
+    private SoundManager sm;
+    private VibrationManager vm;
 
-    public Obstacles(Player player){
+    public Obstacles(Player player, SoundManager sm, VibrationManager vm){
         this.player = player;
+        this.sm = sm;
+        this.vm = vm;
 
     }
 

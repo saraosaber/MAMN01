@@ -15,7 +15,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize GameController with the Player and Obstacle instances
-        Thread gameControllerThread = new Thread(new GameController(this));
+        VibrationManager vm = new VibrationManager(this);
+        SoundManager sm = new SoundManager(this);
+        Thread gameControllerThread = new Thread(new GameController(this, sm, vm));
         gameControllerThread.start();
     }
 
