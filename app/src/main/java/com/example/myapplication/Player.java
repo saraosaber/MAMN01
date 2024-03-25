@@ -44,7 +44,7 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
         while (running) {
             // Player logic goes here
             System.out.println("Player thread is running");
-            //soundManager.playSound(run);
+            soundManager.playSound(run);
             try {
                 // Adjust sleep time as needed
                 TimeUnit.MILLISECONDS.sleep(1000);

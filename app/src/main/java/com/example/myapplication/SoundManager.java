@@ -26,7 +26,7 @@ public class SoundManager extends AppCompatActivity {
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
-        soundPool = new SoundPool.Builder().setAudioAttributes(attributes).build();
+        soundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(3).build();
         running = soundPool.load(context, R.raw.running, 1);
         bird = soundPool.load(context, R.raw.vulture, 1);
         snake = soundPool.load(context, R.raw.snake, 1);
