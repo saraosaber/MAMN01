@@ -1,33 +1,51 @@
 package com.example.myapplication;
 
-import java.util.concurrent.TimeUnit;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 public class Player implements Runnable, InputHandler.SwipeListener  {
 
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static final int RUNNING = 0;
     private static final int JUMPING = 1;
     private static final int DUCKING = 2;
     private int state;
+    private boolean interrupted;
 
     public Player() {
         state = RUNNING;
+        interrupted = false;
     }
 
     @Override
     public void onSwipeUp() {
         // Player reacts to swipe up event
         System.out.println("--- Player jumps! ---");
-        state = 1;
+        if(!interrupted) {
+            state = 2;
+            scheduler.schedule(() -> {
+                state = 0;
+                System.out.println("--- Player running! ---");
+            }, 2, TimeUnit.SECONDS);
+        }
     }
 
     @Override
     public void onSwipeDown() {
         // Player reacts to swipe down event
         System.out.println("--- Player ducks! ---");
-        state = 2;
+        if(!interrupted) {
+            state = 2;
+            scheduler.schedule(() -> {
+                state = 0;
+                System.out.println("--- Player running! ---");
+            }, 2, TimeUnit.SECONDS);
+        }
     }
 
     public void pause() {
+        interrupted = true;
     }
 
     public void resume() {
@@ -35,16 +53,7 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
 
     @Override
     public void run() {
-        while (true) {
-            // Player logic goes here
-            System.out.println("Player thread is running");
-            try {
-                // Adjust sleep time as needed
-                TimeUnit.MILLISECONDS.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println("Player is running!");
     }
 
     public boolean isJumping() {

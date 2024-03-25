@@ -1,20 +1,34 @@
 package com.example.myapplication;
-import com.example.myapplication.Player;
-import com.example.myapplication.Obstacles;
-
+import android.view.GestureDetector;
+import android.widget.RelativeLayout;
 import java.util.concurrent.TimeUnit;
 
-public class GameController {
+public class GameController implements Runnable {
 
-    private static Thread playerThread;
+    private InputHandler inputHandler;
     private Player player;
+    private static Thread playerThread;
 
-    public GameController(Player player) {
-        this.player = player;
+    public GameController(MainActivity context) {
+
+          // Initialize the Player
+          player = new Player();
+
+          // Initialize the InputHandler and set the SwipeListener
+          // Initialize the GestureDetector
+          GestureDetector gestureDetector = new GestureDetector(context, new InputHandler.GestureListener());
+          inputHandler = new InputHandler(context, gestureDetector);
+          inputHandler.setSwipeListener(player);
+
+          // Get the view where you want to detect swipe gestures
+          RelativeLayout swipeAreaView = context.findViewById(R.id.swipeAreaView);
+
+          // Set the InputHandler as the OnTouchListener for the view
+          swipeAreaView.setOnTouchListener(inputHandler);                                                                                         
     }
 
-    public void start() {
-        Thread playerThread = new Thread(player);
+    public void startGame() {
+        playerThread = new Thread(player);
         Thread obstaclesThread = new Thread(new Obstacles(player));
 
         //remove later (for  testing)
@@ -44,14 +58,23 @@ public class GameController {
 
         playerThread.start();
         obstaclesThread.start();
-        /* TO-DO .await() till obstacles,
-        alltså när obstacle är "färdig = interrupt", stäng av player thread, sen anropas metoden för
-        gameOver() (ljud) */
 
-        
+        try {
+            obstaclesThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        playerThread.interrupt();
+
+        System.out.println("Game over...");
     }
 
     public void stop() {
         // Stop player and obstacle threads if needed
+    }
+
+    @Override
+    public void run() {
+        startGame();
     }
 }
