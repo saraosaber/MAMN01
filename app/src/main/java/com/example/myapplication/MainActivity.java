@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private InputHandler inputHandler;
     private Player player;
     private SoundManager soundManager;
+    private VibrationManager vibrationManager;
     private Obstacle obstacle;
 
     @Override
@@ -29,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the Player
         soundManager = new SoundManager(this);
+        vibrationManager = new VibrationManager(this);
+
         player = new Player(soundManager);
+        obstacle = new Obstacle(soundManager, vibrationManager);
 
         // Initialize the InputHandler and set the SwipeListener
         inputHandler = new InputHandler(this, gestureDetector);

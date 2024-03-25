@@ -8,6 +8,7 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
 
     private boolean running = true;
     private SoundManager soundManager;
+    private VibrationManager vibrationManager;
     private int jump = 0;
     private int duck = 1;
     private int run = 5;

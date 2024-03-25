@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 public class Obstacle implements Runnable {
 
     private boolean running = true;
+    private SoundManager soundManager;
+    private VibrationManager vibrationManager;
 
     public void pause() {
         running = false;
@@ -13,7 +15,12 @@ public class Obstacle implements Runnable {
     public void resume() {
         running = true;
     }
+    public Obstacle(SoundManager sm, VibrationManager vm){
+        soundManager = sm;
+        vibrationManager = vm;
 
+
+    }
     @Override
     public void run() {
         while (running) {

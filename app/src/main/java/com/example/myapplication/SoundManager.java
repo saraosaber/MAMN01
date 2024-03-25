@@ -20,6 +20,8 @@ public class SoundManager extends AppCompatActivity {
     private int jump;
     private int duck;
     private int crash;
+    private int start;
+
 
     public SoundManager(Context context){
         AudioAttributes attributes = new AudioAttributes.Builder()
@@ -27,12 +29,13 @@ public class SoundManager extends AppCompatActivity {
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
         soundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(3).build();
-        running = soundPool.load(context, R.raw.running, 1);
+        running = soundPool.load(context, R.raw.bearscreamrun, 1);
         bird = soundPool.load(context, R.raw.vulture, 1);
         snake = soundPool.load(context, R.raw.snake, 1);
         jump = soundPool.load(context, R.raw.grunt, 1);
         duck = soundPool.load(context, R.raw.thud1, 1);
         crash = soundPool.load(context, R.raw.punch1, 1);
+        start = soundPool.load(context, R.raw.skrik2, 1);
     }
     public void playSound(int action)
     {
@@ -57,7 +60,10 @@ public class SoundManager extends AppCompatActivity {
                 soundPool.play(snake,1, 1, 0, 0, 1);
                 break;
             case 5: //running
-                soundPool.play(running,1, 1, 0, 0, 1);
+                soundPool.play(running,1, 1, 0, -1, 1);
+                break;
+            case 6: //start sound
+                soundPool.play(start,1, 1, 0, -1, 1);
                 break;
     }
 }
