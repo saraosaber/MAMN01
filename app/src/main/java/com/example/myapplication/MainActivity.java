@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.widget.RelativeLayout;
@@ -13,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private InputHandler inputHandler;
     private Player player;
+    private SoundManager soundManager;
     private Obstacle obstacle;
 
     @Override
@@ -20,15 +23,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Initialize the GestureDetector
         GestureDetector gestureDetector = new GestureDetector(this, new InputHandler.GestureListener());
 
         // Initialize the Player
-        player = new Player();
+        soundManager = new SoundManager(this);
+        player = new Player(soundManager);
 
         // Initialize the InputHandler and set the SwipeListener
         inputHandler = new InputHandler(this, gestureDetector);
         inputHandler.setSwipeListener(player);
+
 
         // Get the view where you want to detect swipe gestures
         RelativeLayout swipeAreaView = findViewById(R.id.swipeAreaView);
