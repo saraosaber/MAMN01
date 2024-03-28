@@ -10,6 +10,11 @@ public class GameController implements Runnable {
     private static Thread playerThread;
     private final SoundManager sm;
     private final VibrationManager vm;
+    private int start = 6;
+    private int crash = 2;
+    private int gameOver = 7;
+    private int running = 5;
+    private int music = 8;
 
     public GameController(MainActivity context, SoundManager sm, VibrationManager vm) {
           this.sm = sm;
@@ -28,38 +33,26 @@ public class GameController implements Runnable {
           RelativeLayout swipeAreaView = context.findViewById(R.id.swipeAreaView);
 
           // Set the InputHandler as the OnTouchListener for the view
-          swipeAreaView.setOnTouchListener(inputHandler);                                                                                         
+          swipeAreaView.setOnTouchListener(inputHandler);
     }
 
     public void startGame() {
+
         playerThread = new Thread(player);
         Thread obstaclesThread = new Thread(new Obstacles(player, sm, vm));
 
-        //remove later (for  testing)
+        // Intro sounds with correct timing
         System.out.println("--- Are you ready? ---");
-        System.out.println("Countdown");
-        try { // remove later
-            TimeUnit.MILLISECONDS.sleep(1000);
-            System.out.println("3");
+        try {
+            sm.playSound(start, 1);
+            TimeUnit.MILLISECONDS.sleep(4000);
+            sm.playSound(running, 1); // looped
+            sm.playSound(music, 1); // looped
+            TimeUnit.MILLISECONDS.sleep(2000);
+            System.out.println("Start!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        try { // remove later
-            TimeUnit.MILLISECONDS.sleep(1000);
-            System.out.println("2");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try { // remove later
-            TimeUnit.MILLISECONDS.sleep(1000);
-            System.out.println("1");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Start!");
-
-        // TO-DO skapa metod för att  köra intro
-
         playerThread.start();
         obstaclesThread.start();
 
@@ -72,6 +65,8 @@ public class GameController implements Runnable {
         player.pause();
 
         System.out.println("Game over...");
+        sm.playSound(crash, 1);
+        sm.playSound(gameOver, 1);
     }
 
     public void stop() {

@@ -12,6 +12,7 @@ public class VibrationManager extends AppCompatActivity {
     private Vibrator vibrator;
 
     public VibrationManager (Context context) {
+
     }
 
     public void vibrate(){

@@ -8,12 +8,13 @@ public class Obstacles implements Runnable {
     private Player player;
     private SoundManager sm;
     private VibrationManager vm;
+    private int bird = 3;
+    private int snake = 4;
 
     public Obstacles(Player player, SoundManager sm, VibrationManager vm){
         this.player = player;
         this.sm = sm;
         this.vm = vm;
-
     }
 
     public void pause() {
@@ -25,11 +26,16 @@ public class Obstacles implements Runnable {
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
-            // Obstacle logic goes here
-            System.out.println("Obstacles thread is running");
-
             // to-do add random waiting time between obstacles
+            System.out.println("New obstacle!");
+            try {
+                TimeUnit.MILLISECONDS.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
+
+            // Obstacle logic goes here
             nextObstacle();
         }
     }
@@ -46,36 +52,47 @@ public class Obstacles implements Runnable {
     }
 
     private void startBird() {
-        for(int i = 0 ; i <= 3 ; i++) {
-            System.out.println("bird"+i);
-            try {
-                TimeUnit.MILLISECONDS.sleep(1000);  
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("Current player state: " + player.getStateString() + ". Bird: "+ i);
+        if (Thread.currentThread().isInterrupted()) {
+            System.out.println("Thread interrupted, exiting startSnake()");
+            return;
         }
-        
-        if(!player.isDucking()) {
-            System.out.println("-----------DEAD!--------");
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("bird" + (3 - i));
+            sm.playSound(bird, (float) (i * 0.3));
+            try {
+                TimeUnit.MILLISECONDS.sleep(1000);
+            } catch (InterruptedException e) {
+                // Handle interruption
+                e.printStackTrace(); // Print the stack trace
+                Thread.currentThread().interrupt(); // Reset interrupted status
+                return; // Exit the method
+            }
+        }
+
+        if (!player.isDucking()) {
             Thread.currentThread().interrupt();
         }
     }
 
     private void startSnake() {
-        for(int i = 0 ; i <= 3 ; i++) {
-            System.out.println("snake"+i);
-            try {
-                TimeUnit.MILLISECONDS.sleep(1000);  
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (!Thread.currentThread().isInterrupted()) {
+
+            for (int i = 1; i <= 3; i++) {
+                System.out.println("snake" + (3 - i));
+                sm.playSound(snake, (float)(i*0.3));
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    e.printStackTrace(); // Print the stack trace
+                    Thread.currentThread().interrupt(); // Reset interrupted status
+                    return; // Exit the method
+                }
             }
-        }
-        
-        if(!player.isJumping()) {
-            System.out.println("-----------DEAD!--------");
-            Thread.currentThread().interrupt();
+
+            if (!player.isJumping()) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }

@@ -26,28 +26,33 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
     @Override
     public void onSwipeUp() {
         // Player reacts to swipe up event
-        System.out.println("--- Player jumps! ---");
-        if(!interrupted) {
-            state = 2;
-            sm.playSound(jump);
-            scheduler.schedule(() -> {
-                state = 0;
-                System.out.println("--- Player running! ---");
-            }, 2, TimeUnit.SECONDS);
+        if(!interrupted && state != JUMPING) {
+            System.out.println("--- Player jumps! ---");
+            state = JUMPING;
+            sm.playSound(jump, 1);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000); // Wait for 2 seconds
+                    state = RUNNING;
+                    System.out.println("--- Back to running (after jump/duck) ---");
+                } catch (InterruptedException e){
+                    e.printStackTrace();                            
+                }
+            }).start();
         }
     }
 
     @Override
     public void onSwipeDown() {
         // Player reacts to swipe down event
-        System.out.println("--- Player ducks! ---");
-        if(!interrupted) {
+        if(!interrupted && state != DUCKING) {
+            System.out.println("--- Player ducks! ---");
             state = 2;
-            sm.playSound(duck);
+            sm.playSound(duck,1);
             scheduler.schedule(() -> {
                 state = 0;
                 System.out.println("--- Player running! ---");
-            }, 2, TimeUnit.SECONDS);
+            },2, TimeUnit.SECONDS);
         }
     }
 
