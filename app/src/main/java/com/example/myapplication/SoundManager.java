@@ -32,13 +32,16 @@ public class SoundManager extends AppCompatActivity {
         soundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(3).build();
         running = soundPool.load(context, R.raw.running, 1);
         bird = soundPool.load(context, R.raw.crow, 1);
-        snake = soundPool.load(context, R.raw.snake, 1);
-        jump = soundPool.load(context, R.raw.jump, 1);
+        snake = soundPool.load(context, R.raw.snake_new, 1);
+        jump = soundPool.load(context, R.raw.jump_2, 1);
         duck = soundPool.load(context, R.raw.duck, 1);
         crash = soundPool.load(context, R.raw.crash, 1);
         start = soundPool.load(context, R.raw.intro, 1);
         gameOver = soundPool.load(context, R.raw.game_over, 1);
         music = soundPool.load(context, R.raw.music, 1);
+
+        mediaPlayer = MediaPlayer.create(context, R.raw.music); // Load your audio file here
+        mediaPlayer.setLooping(true); // Set the media player to loop
     }
     public void playSound(int action, float volume)
     {
@@ -74,6 +77,23 @@ public class SoundManager extends AppCompatActivity {
             case 8: //start sound, TO-DO move this to media player instead of soundPool‹
                 soundPool.play(music,(float)0.2, (float)0.2, 1, 1, 1);
                 break;
+        }
     }
-}
+    public void playMusic() {
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start(); // Start playing the music
+        }
+    }
+
+    public void stopMusic() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause(); // Pause the music
+        }
+    }
+
+    public void adjustVolume(float leftVolume, float rightVolume) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(leftVolume, rightVolume); // Adjust the volume
+        }
+    }
 }

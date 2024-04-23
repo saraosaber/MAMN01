@@ -1,4 +1,5 @@
 package com.example.myapplication;
+import android.os.Vibrator;
 import android.view.GestureDetector;
 import android.widget.RelativeLayout;
 import java.util.concurrent.TimeUnit;
@@ -9,16 +10,16 @@ public class GameController implements Runnable {
     private Player player;
     private static Thread playerThread;
     private final SoundManager sm;
-    private final VibrationManager vm;
     private int start = 6;
     private int crash = 2;
     private int gameOver = 7;
     private int running = 5;
     private int music = 8;
+    private Vibrator v;
 
-    public GameController(MainActivity context, SoundManager sm, VibrationManager vm) {
+    public GameController(MainActivity context, SoundManager sm, Vibrator v) {
           this.sm = sm;
-          this.vm = vm;
+          this.v = v;
 
           // Initialize the Player
           player = new Player(sm);
@@ -39,7 +40,7 @@ public class GameController implements Runnable {
     public void startGame() {
 
         playerThread = new Thread(player);
-        Thread obstaclesThread = new Thread(new Obstacles(player, sm, vm));
+        Thread obstaclesThread = new Thread(new Obstacles(player, sm, v));
 
         // Intro sounds with correct timing
         System.out.println("--- Are you ready? ---");
@@ -53,6 +54,9 @@ public class GameController implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        sm.adjustVolume(0.1f, 0.1f);
+        sm.playMusic();
         playerThread.start();
         obstaclesThread.start();
 
@@ -64,7 +68,10 @@ public class GameController implements Runnable {
         playerThread.interrupt();
         player.pause();
 
+        sm.stopMusic();
         System.out.println("Game over...");
+        long[] pattern = {1500, 20, 400, 1600, 500, 200};
+        v.vibrate(pattern, -1);
         sm.playSound(crash, 1);
         sm.playSound(gameOver, 1);
     }
