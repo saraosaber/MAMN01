@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.GestureDetector;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.myapplication.Player;
@@ -11,6 +12,8 @@ import com.example.myapplication.Player;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    GameController gameController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize GameController with the Player and Obstacle instances
         SoundManager sm = new SoundManager(this);
-        Thread gameControllerThread = new Thread(new GameController(this, sm, vibrator));
+        gameController = new GameController(this, sm, vibrator);
+        Thread gameControllerThread = new Thread(gameController);
         try { // dont remove, this allows all initialisation to complete before starting. otherwise things like sound manager wont work
             TimeUnit.MILLISECONDS.sleep(4000);
         } catch (InterruptedException e) {

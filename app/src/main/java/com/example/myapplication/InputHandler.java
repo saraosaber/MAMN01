@@ -41,13 +41,11 @@ public class InputHandler implements SensorEventListener {
             if (event.values[1] > 1.0f) {
                 // Gyroscope tilted to the right
                 if (tiltListener != null) {
-                    System.out.println("right = duck");
                     tiltListener.onTiltRight(); // You can change this to any desired action
                 }
             } else if (event.values[1] < -1.0f) {
                 // Gyroscope tilted to the left
                 if (tiltListener != null) {
-                    System.out.println("left = up");
                     tiltListener.onTiltLeft(); // You can change this to any desired action
                 }
             }
