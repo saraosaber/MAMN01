@@ -43,7 +43,7 @@ public class SoundManager extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(context, R.raw.music); // Load your audio file here
         mediaPlayer.setLooping(true); // Set the media player to loop
     }
-    public void playSound(int action, float volume)
+    public void playSound(int action, float volumeLeft, float volumeRight)
     {
         switch (action) {
             case 0: //jump
@@ -60,10 +60,10 @@ public class SoundManager extends AppCompatActivity {
                 soundPool.play(crash,1, 1, 3, 0, 1);
                 break;
             case 3: //bird
-                soundPool.play(bird,volume, volume, 3, 0, 1);
+                soundPool.play(bird,volumeLeft, volumeRight, 3, 0, 1);
                 break;
             case 4: //snake
-                soundPool.play(snake,1, 1, 3, 0, 1);
+                soundPool.play(snake,volumeLeft, volumeRight, 3, 0, 1);
                 break;
             case 5: //running
                 soundPool.play(running,1, 1, 2, 1, 1);
@@ -72,7 +72,7 @@ public class SoundManager extends AppCompatActivity {
                 soundPool.play(start, 1, 1, 1, 0, 1);
                 break;
             case 7: //start sound
-                soundPool.play(gameOver,volume, 1, 3, 0, 1);
+                soundPool.play(gameOver,volumeLeft, volumeRight, 3, 0, 1);
                 break;
             case 8: //start sound, TO-DO move this to media player instead of soundPool‹
                 soundPool.play(music,(float)0.2, (float)0.2, 1, 1, 1);

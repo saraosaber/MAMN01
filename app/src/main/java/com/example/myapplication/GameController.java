@@ -18,37 +18,29 @@ public class GameController implements Runnable {
     private Vibrator v;
 
     public GameController(MainActivity context, SoundManager sm, Vibrator v) {
-          this.sm = sm;
-          this.v = v;
+        this.sm = sm;
+        this.v = v;
 
-          // Initialize the Player
-          player = new Player(sm);
+        // Initialize the Player
+        player = new Player(sm);
 
-          // Initialize the InputHandler and set the SwipeListener
-          // Initialize the GestureDetector
-          GestureDetector gestureDetector = new GestureDetector(context, new InputHandler.GestureListener());
-          inputHandler = new InputHandler(context, gestureDetector);
-          inputHandler.setSwipeListener(player);
-
-          // Get the view where you want to detect swipe gestures
-          RelativeLayout swipeAreaView = context.findViewById(R.id.swipeAreaView);
-
-          // Set the InputHandler as the OnTouchListener for the view
-          swipeAreaView.setOnTouchListener(inputHandler);
+        // Initialize the InputHandler and set the SwipeListener
+        // Initialize the GestureDetector
+        inputHandler = new InputHandler(context);
+        inputHandler.setTiltListener(player);
     }
 
     public void startGame() {
-
         playerThread = new Thread(player);
         Thread obstaclesThread = new Thread(new Obstacles(player, sm, v));
 
         // Intro sounds with correct timing
         System.out.println("--- Are you ready? ---");
         try {
-            sm.playSound(start, 1);
+            sm.playSound(start, 1, 1);
             TimeUnit.MILLISECONDS.sleep(4000);
-            sm.playSound(running, 1); // looped
-            sm.playSound(music, 1); // looped
+            sm.playSound(running, 1, 1); // looped
+            sm.playSound(music, 1, 1); // looped
             TimeUnit.MILLISECONDS.sleep(2000);
             System.out.println("Start!");
         } catch (InterruptedException e) {
@@ -72,8 +64,8 @@ public class GameController implements Runnable {
         System.out.println("Game over...");
         long[] pattern = {1500, 20, 400, 1600, 500, 200};
         v.vibrate(pattern, -1);
-        sm.playSound(crash, 1);
-        sm.playSound(gameOver, 1);
+        sm.playSound(crash, 1, 1);
+        sm.playSound(gameOver, 1, 1);
     }
 
     public void stop() {

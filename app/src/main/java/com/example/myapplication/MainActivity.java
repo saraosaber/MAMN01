@@ -12,13 +12,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Vibrator vibrator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         // Initialize GameController with the Player and Obstacle instances
         SoundManager sm = new SoundManager(this);

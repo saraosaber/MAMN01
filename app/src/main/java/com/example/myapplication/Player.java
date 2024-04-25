@@ -4,12 +4,12 @@ package com.example.myapplication;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-public class Player implements Runnable, InputHandler.SwipeListener  {
+public class Player implements Runnable, InputHandler.TiltListener  {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static final int RUNNING = 0;
-    private static final int JUMPING = 1;
-    private static final int DUCKING = 2;
+    private static final int LEFT = 1;
+    private static final int RIGHT = 2;
     private int state;
     private boolean interrupted;
     private SoundManager sm;
@@ -24,35 +24,18 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
     }
 
     @Override
-    public void onSwipeUp() {
-        // Player reacts to swipe up event
-        if(!interrupted && state != JUMPING) {
+    public void onTiltLeft() {
+        if(!interrupted && state != LEFT) {
             System.out.println("--- Player jumps! ---");
-            state = JUMPING;
-            sm.playSound(jump, 1);
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000); // Wait for 2 seconds
-                    state = RUNNING;
-                    System.out.println("--- Back to running (after jump/duck) ---");
-                } catch (InterruptedException e){
-                    e.printStackTrace();                            
-                }
-            }).start();
+            state = LEFT;
         }
     }
 
     @Override
-    public void onSwipeDown() {
-        // Player reacts to swipe down event
-        if(!interrupted && state != DUCKING) {
+    public void onTiltRight() {
+        if(!interrupted && state != RIGHT) {
             System.out.println("--- Player ducks! ---");
-            state = 2;
-            sm.playSound(duck,1);
-            scheduler.schedule(() -> {
-                state = 0;
-                System.out.println("--- Player running! ---");
-            },2, TimeUnit.SECONDS);
+            state = RIGHT;
         }
     }
 
@@ -68,17 +51,17 @@ public class Player implements Runnable, InputHandler.SwipeListener  {
         System.out.println("Player is running!");
     }
 
-    public boolean isJumping() {
-        return state == JUMPING;
+    public boolean isLeft() {
+        return state == LEFT;
     }
 
-    public boolean isDucking() {
-        return state == DUCKING;
+    public boolean isRight() {
+        return state == RIGHT;
     }
 
     public String getStateString() {
         if(state == 0) return "Running";
-        if(state == 1) return "Jumping";
-        return "Ducking";
+        if(state == 1) return "LEFT";
+        return "RIGHT";
     }
 }

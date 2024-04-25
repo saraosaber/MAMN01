@@ -14,6 +14,10 @@ public class Obstacles implements Runnable {
     private Vibrator vibrator;
     private int bird = 3;
     private int snake = 4;
+    private int jump = 0;
+    private int duck = 1;
+    private int LEFT = 10;
+    private int RIGHT = 11;
     private Vibrator v;
 
 
@@ -63,54 +67,74 @@ public class Obstacles implements Runnable {
         // Randomly chose and start next obstacle
         boolean randomObstacle = ran.nextBoolean();
         if(randomObstacle) {
-            startBird();
-            v.vibrate(100);
+            startObstacle(LEFT);
         } else {
-            startSnake();
-            v.vibrate(100);
+            startObstacle(RIGHT);
         }
+        v.vibrate(100);
     }
 
-    private void startBird() {
-        if (Thread.currentThread().isInterrupted()) {
-            System.out.println("Thread interrupted, exiting startSnake()");
-            return;
-        }
-
-        System.out.println("bird");
-        sm.playSound(bird, (float) 1);
-        try {
-            TimeUnit.MILLISECONDS.sleep(1500);
-        } catch (InterruptedException e) {
-            // Handle interruption
-            e.printStackTrace(); // Print the stack trace
-            Thread.currentThread().interrupt(); // Reset interrupted status
-            return; // Exit the method
-        }
-
-        if (!player.isDucking()) {
-            Thread.currentThread().interrupt();
-
-        }
-    }
-
-    private void startSnake() {
+    private void startObstacle(int directionOfObstacle) {
         if (!Thread.currentThread().isInterrupted()) {
 
-            System.out.println("snake");
-            sm.playSound(snake, (float) 1);
-            try {
-                TimeUnit.MILLISECONDS.sleep(1500);
-            } catch (InterruptedException e) {
-                // Handle interruption
-                e.printStackTrace(); // Print the stack trace
-                Thread.currentThread().interrupt(); // Reset interrupted status
-                return; // Exit the method
+            if(directionOfObstacle == RIGHT) {
+                System.out.println("Obstacle from right -> TILT LEFT !");
+                playRandomObstacle(RIGHT);
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1500);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    e.printStackTrace(); // Print the stack trace
+                    Thread.currentThread().interrupt(); // Reset interrupted status
+                    return; // Exit the method
+                }
+
+                if (!player.isLeft()) {
+                    Thread.currentThread().interrupt(); // Hit obstacle
+                }
             }
 
-            if (!player.isJumping()) {
-                Thread.currentThread().interrupt();
+            if(directionOfObstacle == LEFT) {
+                System.out.println("Obstacle from right -> TILT RIGHT !");
+                playRandomObstacle(LEFT);
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1500);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    e.printStackTrace(); // Print the stack trace
+                    Thread.currentThread().interrupt(); // Reset interrupted status
+                    return; // Exit the method
+                }
+
+                if (!player.isRight()) {
+                    Thread.currentThread().interrupt(); // Hit obstacle
+                }
             }
+            sm.playSound(jump, 1, 1); // Play jump sound; means obstacle completed!
+        }
+    }
+
+    private void playRandomObstacle(int directionOfSound) {
+        Random ran = new Random();
+        float volumeLeft;
+        float volumeRight;
+
+        // Decide which ear to play the sound
+        if(directionOfSound == RIGHT) {
+            volumeLeft = 0;
+            volumeRight = 1;
+        } else {
+            volumeLeft = 1;
+            volumeRight = 0;
+        }
+
+        // Play the sound using sound manager
+        if(ran.nextBoolean()) {
+            sm.playSound(snake, volumeLeft, volumeRight);
+        } else {
+            sm.playSound(bird, volumeLeft, volumeRight);
         }
     }
 }
