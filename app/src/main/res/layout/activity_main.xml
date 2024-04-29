@@ -24,7 +24,7 @@
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="Tilt phone to avoid animals"
+                android:text="Swipe to avoid animals"
                 android:textColor="#FF0000"
                 android:textSize="28sp"
                 android:textStyle="bold" />

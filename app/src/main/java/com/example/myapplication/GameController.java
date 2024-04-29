@@ -25,9 +25,17 @@ public class GameController implements Runnable {
         player = new Player(sm);
 
         // Initialize the InputHandler and set the SwipeListener
+        // Initialize the InputHandler and set the SwipeListener
         // Initialize the GestureDetector
-        inputHandler = new InputHandler(context);
+        GestureDetector gestureDetector = new GestureDetector(context, new InputHandler.GestureListener());
+        inputHandler = new InputHandler(context, gestureDetector);
         inputHandler.setTiltListener(player);
+
+        // Get the view where you want to detect swipe gestures
+        RelativeLayout swipeAreaView = context.findViewById(R.id.swipeAreaView);
+
+        // Set the InputHandler as the OnTouchListener for the view
+        swipeAreaView.setOnTouchListener(inputHandler);
     }
 
     public void startGame() {

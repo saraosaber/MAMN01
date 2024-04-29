@@ -26,7 +26,7 @@ public class Player implements Runnable, InputHandler.TiltListener  {
     @Override
     public void onTiltLeft() {
         if(!interrupted && state != LEFT) {
-            System.out.println("--- Player jumps! ---");
+            System.out.println("--- Player LEFT! ---");
             state = LEFT;
         }
     }
@@ -34,7 +34,7 @@ public class Player implements Runnable, InputHandler.TiltListener  {
     @Override
     public void onTiltRight() {
         if(!interrupted && state != RIGHT) {
-            System.out.println("--- Player ducks! ---");
+            System.out.println("--- Player RIGHT! ---");
             state = RIGHT;
         }
     }
