@@ -29,7 +29,7 @@ public class GameController implements Runnable {
         // Initialize the GestureDetector
         GestureDetector gestureDetector = new GestureDetector(context, new InputHandler.GestureListener());
         inputHandler = new InputHandler(context, gestureDetector);
-        inputHandler.setTiltListener(player);
+        inputHandler.setInputListener(player);
 
         // Get the view where you want to detect swipe gestures
         RelativeLayout swipeAreaView = context.findViewById(R.id.swipeAreaView);
@@ -43,14 +43,12 @@ public class GameController implements Runnable {
         Thread obstaclesThread = new Thread(new Obstacles(player, sm, v));
 
         // Intro sounds with correct timing
-        System.out.println("--- Are you ready? ---");
         try {
             sm.playSound(start, 1, 1);
             TimeUnit.MILLISECONDS.sleep(4000);
             sm.playSound(running, 1, 1); // looped
             sm.playSound(music, 1, 1); // looped
             TimeUnit.MILLISECONDS.sleep(2000);
-            System.out.println("Start!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -69,7 +67,6 @@ public class GameController implements Runnable {
         player.pause();
 
         sm.stopMusic();
-        System.out.println("Game over...");
         long[] pattern = {1500, 20, 400, 1600, 500, 200};
         v.vibrate(pattern, -1);
         sm.playSound(crash, 1, 1);

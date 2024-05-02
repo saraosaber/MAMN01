@@ -7,24 +7,31 @@
     android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-        <!-- Controls Explanation -->
-        <RelativeLayout
-            android:id="@+id/swipeAreaView"
+    <!-- Controls Explanation -->
+    <RelativeLayout
+        android:id="@+id/swipeAreaView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="24dp"
+        android:gravity="center">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="24dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
             android:gravity="center">
-            >
 
             <TextView
-                android:id="@+id/tvControlsExplanation"
-                android:layout_width="wrap_content"
+                android:id="@+id/headphones"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_marginTop="60sp"
+                android:layout_marginBottom="120sp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="Swipe to avoid animals"
+                android:text="USE HEADPHONES!"
                 android:textColor="#FF0000"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -32,14 +39,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvControlsExplanation"
-                android:layout_centerInParent="true"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:paddingTop="40sp"
+                android:paddingBottom="80sp">
 
+                <!-- Tilt Controls -->
                 <ImageView
-                    android:id="@+id/ivArrow"
+                    android:id="@+id/tiltControls"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_marginRight="60px"
@@ -48,6 +56,16 @@
                     android:src="@drawable/baseline_arrow_right_alt_24"
                     app:tint="#0000FF" />
 
+                <TextView
+                    android:id="@+id/tilt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    android:text="TILT"
+                    android:textColor="#FF0000"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/ivArrow2"
@@ -59,9 +77,52 @@
                     android:src="@drawable/baseline_arrow_right_alt_24"
                     app:tint="#0000FF" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="0sp"
+                android:paddingBottom="0sp">
+
+                <!-- Swipe Controls -->
+                <ImageView
+                    android:id="@+id/ivArrow4"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:rotation="-90"
+                    android:scaleType="center"
+                    android:src="@drawable/baseline_arrow_right_alt_24"
+                    app:tint="#0000FF" />
+
+                <TextView
+                    android:id="@+id/swipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    android:text="SWIPE"
+                    android:textColor="#FF0000"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/ivArrow3"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:rotation="90"
+                    android:rotationX="21"
+                    android:scaleType="center"
+                    android:src="@drawable/baseline_arrow_right_alt_24"
+                    app:tint="#0000FF" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </FrameLayout>

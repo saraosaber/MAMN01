@@ -9,28 +9,46 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class InputHandler implements View.OnTouchListener {
+public class InputHandler implements View.OnTouchListener, SensorEventListener {
 
     private final GestureDetector gestureDetector;
-    private static TiltListener tiltListener;
+    private static InputListener inputListener;
     private SensorManager sensorManager;
     private Sensor gyroscopeSensor;
 
     public InputHandler(Context context, GestureDetector gestureDetector) {
         this.gestureDetector = gestureDetector;
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if (gyroscopeSensor != null) {
+            sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
-    public interface TiltListener {
-        void onTiltLeft();
-        void onTiltRight();
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            // Handle gyroscope events
+            if (event.values[1] > 1.0f) {
+                // Gyroscope tilted to the right
+                if (inputListener != null) {
+                    inputListener.onTiltRight();
+                }
+            } else if (event.values[1] < -1.0f) {
+                // Gyroscope tilted to the left
+                if (inputListener != null) {
+                    inputListener.onTiltLeft();
+                }
+            }
+        }
     }
 
-    public void setTiltListener(TiltListener tiltListener) {
-        this.tiltListener = tiltListener;
+    public void setInputListener(InputListener inputListener) {
+        this.inputListener = inputListener;
     }
 
     // Gyroscope methods
@@ -48,15 +66,15 @@ public class InputHandler implements View.OnTouchListener {
             float diffY = e2.getY() - e1.getY();
             float diffX = e2.getX() - e1.getX();
 
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffX > 0) {
-                        if (tiltListener != null) {
-                            tiltListener.onTiltRight();
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffY > 0) {
+                        if (inputListener != null) {
+                            inputListener.onSwipeDown();
                         }
                     } else {
-                        if (tiltListener != null) {
-                            tiltListener.onTiltLeft();
+                        if (inputListener != null) {
+                            inputListener.onSwipeUp();
                         }
                     }
                     return true;
@@ -64,5 +82,20 @@ public class InputHandler implements View.OnTouchListener {
             }
             return false;
         }
+    }
+
+    public interface InputListener {
+        void onTiltLeft();
+        void onTiltRight();
+        void onSwipeDown();
+        void onSwipeUp();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do nothing
+    }
+    public void unregisterListener() {
+        sensorManager.unregisterListener(this);
     }
 }
