@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 
+import android.os.Vibrator;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,31 +14,36 @@ public class Player implements Runnable, InputHandler.InputListener  {
     private static final int RIGHT = 2;
     private static final int UP = 3;
     private static final int DOWN = 4;
+    private static final int NO_TILT = 5;
     private final int jump = 0;
     private final int duck = 1;
 
     private int stateVertical;
     private int stateHorizontal;
-    private boolean interrupted;
     private SoundManager sm;
+    private Vibrator v;
+    private boolean restartMode = false;
+    private boolean readyRestart = false;
+    private boolean clicked = false;
 
-    public Player(SoundManager sm) {
+
+    public Player(SoundManager sm, Vibrator v) {
         stateVertical = RUNNING;
         stateHorizontal = RUNNING;
-        interrupted = false;
         this.sm = sm;
+        this.v = v;
     }
 
     @Override
     public void onTiltLeft() {
-        if(!interrupted && stateHorizontal != LEFT) {
+        if(stateHorizontal != LEFT) {
             stateHorizontal = LEFT;
         }
     }
 
     @Override
     public void onTiltRight() {
-        if(!interrupted && stateHorizontal != RIGHT) {
+        if(stateHorizontal != RIGHT) {
             stateHorizontal = RIGHT;
         }
     }
@@ -44,7 +51,8 @@ public class Player implements Runnable, InputHandler.InputListener  {
     @Override
     public void onSwipeUp() {
         // Player reacts to swipe up event
-        if(!interrupted && stateVertical != UP) {
+        if(stateVertical != UP && !restartMode) {
+            v.vibrate(20);
             stateVertical = UP;
             sm.playSound(jump, 1, 1);
             scheduler.schedule(() -> {
@@ -54,9 +62,25 @@ public class Player implements Runnable, InputHandler.InputListener  {
     }
 
     @Override
+    public void onClick() {
+        clicked = true;
+        if(restartMode) {
+            readyRestart = true;
+        }
+    }
+
+    @Override
+    public void onTiltNone() {
+        if(stateHorizontal != NO_TILT) {
+            stateHorizontal = NO_TILT;
+        }
+    }
+
+    @Override
     public void onSwipeDown() {
         // Player reacts to swipe down event
-        if(!interrupted && stateVertical != DOWN) {
+        if(stateVertical != DOWN) {
+            v.vibrate(20);
             stateVertical = DOWN;
             sm.playSound(duck,1, 1);
             scheduler.schedule(() -> {
@@ -66,15 +90,24 @@ public class Player implements Runnable, InputHandler.InputListener  {
     }
 
     public void pause() {
-        interrupted = true;
+        restartMode = true;
+    }
+
+    public boolean isReadyRestart(){
+        return readyRestart;
+    }
+    public void setReadyRestart(boolean condition) {
+        readyRestart = condition;
     }
 
     public void resume() {
+        restartMode = false;
+        readyRestart = false;
     }
 
     @Override
     public void run() {
-        System.out.println("Player is running!");
+        // Thread started
     }
 
     public boolean isLeft() {
@@ -87,6 +120,11 @@ public class Player implements Runnable, InputHandler.InputListener  {
 
     public boolean isJumping() {
         return stateVertical == UP;
+    }
+    public boolean hasClicked() { return clicked; }
+
+    public void setClicked(boolean clicked) {
+        this.clicked = clicked;
     }
 
     public boolean isDucking() {

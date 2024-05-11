@@ -15,6 +15,9 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
     private static InputListener inputListener;
     private SensorManager sensorManager;
     private Sensor gyroscopeSensor;
+    private static final float THRESHOLD_ANGLE = 0.5f;
+    private float tiltAngle = 0.0f;
+    private long lastTimestamp = 0;
 
     public InputHandler(Context context, GestureDetector gestureDetector) {
         this.gestureDetector = gestureDetector;
@@ -26,25 +29,80 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
     }
 
     public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (inputListener != null) {
+                inputListener.onClick();
+            }
+        }
         return gestureDetector.onTouchEvent(event);
     }
 
+    /* OLD VERSION
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float threshold = 0.5f; // Adjust this threshold as needed
+
+
             // Handle gyroscope events
-            if (event.values[1] > 1.0f) {
+            if (event.values[1] > threshold) {
                 // Gyroscope tilted to the right
                 if (inputListener != null) {
                     inputListener.onTiltRight();
                 }
-            } else if (event.values[1] < -1.0f) {
+            } else if (event.values[1] < -threshold) {
                 // Gyroscope tilted to the left
                 if (inputListener != null) {
                     inputListener.onTiltLeft();
                 }
             }
         }
+    } */
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            // Handle gyroscope events
+            float angularVelocityY = event.values[1];
+
+            // Integrate angular velocity to get the tilt angle
+            tiltAngle += angularVelocityY * (float) (event.timestamp - lastTimestamp) / 1e9f;
+
+            // Limit the tilt angle to -PI/2 to PI/2
+            tiltAngle = (float) Math.max(-Math.PI / 2, Math.min(tiltAngle, Math.PI / 2));
+            lastTimestamp = event.timestamp;
+
+            // Check if tilt is left, right, or none
+            if (tiltAngle > THRESHOLD_ANGLE) {
+                notifyTiltListener(TiltDirection.RIGHT);
+            } else if (tiltAngle < -THRESHOLD_ANGLE) {
+                notifyTiltListener(TiltDirection.LEFT);
+            } else {
+                notifyTiltListener(TiltDirection.NONE);
+            }
+        }
+    }
+
+    private void notifyTiltListener(TiltDirection direction) {
+        if (inputListener != null) {
+            switch (direction) {
+                case RIGHT:
+                    inputListener.onTiltRight();
+                    break;
+                case LEFT:
+                    inputListener.onTiltLeft();
+                    break;
+                case NONE:
+                    inputListener.onTiltNone();
+                    break;
+            }
+        }
+    }
+
+    enum TiltDirection {
+        LEFT,
+        RIGHT,
+        NONE
     }
 
     public void setInputListener(InputListener inputListener) {
@@ -89,6 +147,8 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
         void onTiltRight();
         void onSwipeDown();
         void onSwipeUp();
+        void onClick();
+        void onTiltNone();
     }
 
     @Override

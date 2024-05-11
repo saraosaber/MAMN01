@@ -1,31 +1,46 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.view.GestureDetector;
-import android.view.View;
-import android.widget.RelativeLayout;
-
-import com.example.myapplication.Player;
+import android.os.PowerManager;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     GameController gameController;
+    private SoundManager sm;
+    private Vibrator v;
+    private Thread gameControllerThread;
+    private PowerManager.WakeLock wakeLock;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        // Initialize GameController with the Player and Obstacle instances
-        SoundManager sm = new SoundManager(this);
-        gameController = new GameController(this, sm, vibrator);
-        Thread gameControllerThread = new Thread(gameController);
-        try { // dont remove, this allows all initialisation to complete before starting. otherwise things like sound manager wont work
+        // Keep the screen turned on!
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                    PowerManager.ON_AFTER_RELEASE, "YourApp:WakeLockTag");
+            wakeLock.acquire();
+        }
+
+        // Initialize SoundManager
+        sm = new SoundManager(this);
+
+        // Initialize GameController
+        gameController = new GameController(this, sm, v);
+        gameControllerThread = new Thread(gameController);
+        try {
             TimeUnit.MILLISECONDS.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
