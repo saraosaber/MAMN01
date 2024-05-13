@@ -145,13 +145,13 @@ public class Obstacles implements Runnable {
         }
     }
 
-    private boolean waitForAction(int action) {
-        while (!(action == LEFT ? player.isLeft() : player.isRight())) {
-            waitPlease(1500);
+    private void waitForTilt(int direction) {
+        playHorizontalObstacle(direction == RIGHT ? LEFT : RIGHT);
+
+        // Wait for the tilt to the correct direction
+        while ((direction == RIGHT && !player.isRight()) || (direction == LEFT && !player.isLeft())) {
+            waitPlease(400);
         }
-        sm.playSound(16, (float) 0.3, (float) 0.3); // Success sound
-        v.vibrate(20); // Vibrate
-        return true;
     }
 
     private void startWalkthrough() {
@@ -175,28 +175,16 @@ public class Obstacles implements Runnable {
         // 4 Instruction to tilt
         sm.playSound(13, 1, 1);
         waitPlease(6000);
-        boolean completedTilt = horizontalWalkthrough(RIGHT);
-
-        while (!completedTilt) {
-            completedTilt = horizontalWalkthrough(RIGHT); // Try again
-            waitPlease(4000);
-        }
-
-        // "Nice" (feedback)
-        waitPlease(1500);
-        sm.playSound(38, 1, 1);
-        waitPlease(6000);
-
-        completedTilt = false;
-        while (!completedTilt) {
-            completedTilt = horizontalWalkthrough(LEFT);
-            waitPlease(4000);
-        }
+        waitForTilt(RIGHT);
+        waitPlease(3000);
+        waitForTilt(LEFT);
 
         waitPlease(2000);
         firstGame = false;
     }
 
+
+    /* REMOVE THIS LATER IF WE DONT WANT USER TO "die" WHILE DOING A WALKTHROGUH*/
     private boolean horizontalWalkthrough(int direction) {
         playHorizontalObstacle(direction);
         try {
