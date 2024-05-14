@@ -15,16 +15,19 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
     private static InputListener inputListener;
     private SensorManager sensorManager;
     private Sensor gyroscopeSensor;
-    private static final float THRESHOLD_ANGLE = 0.5f;
+    private Sensor accelerometer;
+    private float[] gravity;
+    private float[] acceleration;
+    private static final float THRESHOLD_ANGLE = 0.8f; // 0.8f Good so far
     private float tiltAngle = 0.0f;
     private long lastTimestamp = 0;
 
     public InputHandler(Context context, GestureDetector gestureDetector) {
         this.gestureDetector = gestureDetector;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if (gyroscopeSensor != null) {
-            sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_GAME);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -59,6 +62,8 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
         }
     } */
 
+
+    /* Only gyroscope
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -82,6 +87,47 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
             }
         }
     }
+    */
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // Get the accelerometer values
+            acceleration = event.values.clone();
+
+            // Low-pass filter to reduce noise
+            final float alpha = 0.8f;
+            if (gravity == null) {
+                gravity = event.values.clone();
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    gravity[i] = alpha * gravity[i] + (1 - alpha) * event.values[i];
+                }
+            }
+
+            // Remove the gravity contribution with high-pass filter
+            float[] linearAcceleration = new float[3];
+            for (int i = 0; i < 3; i++) {
+                linearAcceleration[i] = acceleration[i] - gravity[i];
+            }
+
+            // Calculate tilt angle from linear acceleration
+            float x = linearAcceleration[0];
+            float y = linearAcceleration[1];
+            float z = linearAcceleration[2];
+            tiltAngle = (float) Math.atan2(-x, Math.sqrt(y * y + z * z));
+
+            // Check if tilt is left, right, or none
+            if (tiltAngle > THRESHOLD_ANGLE) {
+                notifyTiltListener(TiltDirection.RIGHT);
+            } else if (tiltAngle < -THRESHOLD_ANGLE) {
+                notifyTiltListener(TiltDirection.LEFT);
+            } else {
+                notifyTiltListener(TiltDirection.NONE);
+            }
+        }
+    }
+
 
     private void notifyTiltListener(TiltDirection direction) {
         if (inputListener != null) {

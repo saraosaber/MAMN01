@@ -38,6 +38,7 @@ public class Player implements Runnable, InputHandler.InputListener  {
     public void onTiltLeft() {
         if(stateHorizontal != LEFT) {
             stateHorizontal = LEFT;
+            System.out.println("left");
         }
     }
 
@@ -45,6 +46,7 @@ public class Player implements Runnable, InputHandler.InputListener  {
     public void onTiltRight() {
         if(stateHorizontal != RIGHT) {
             stateHorizontal = RIGHT;
+            System.out.println("right");
         }
     }
 
@@ -73,6 +75,7 @@ public class Player implements Runnable, InputHandler.InputListener  {
     public void onTiltNone() {
         if(stateHorizontal != NO_TILT) {
             stateHorizontal = NO_TILT;
+            System.out.println("none");
         }
     }
 
