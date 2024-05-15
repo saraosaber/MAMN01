@@ -26,12 +26,14 @@ public class SoundManager extends AppCompatActivity {
     private int birdIns;
     private int restartIns;
     private int runIns;
+    private int runn;
     private int snakeIns;
     private int tiltIns;
     private int welcomeIns;
     private int growl;
     private int swoosh;
 
+    private int zero;
     private int one;
     private int two;
     private int three;
@@ -98,12 +100,14 @@ public class SoundManager extends AppCompatActivity {
         birdIns = soundPool.load(context, R.raw.bird2, 1);
         restartIns = soundPool.load(context, R.raw.restart, 1);
         runIns = soundPool.load(context, R.raw.run, 1);
+        runn = soundPool.load(context, R.raw.runn, 1);
         snakeIns = soundPool.load(context, R.raw.snake2, 1);
         tiltIns = soundPool.load(context, R.raw.tilt2, 1);
         welcomeIns = soundPool.load(context, R.raw.welcome, 1);
         growl = soundPool.load(context, R.raw.growl, 1);
-        swoosh = soundPool.load(context, R.raw.swoosh2, 1);
+        swoosh = soundPool.load(context, R.raw.swosh, 1);
 
+        zero = soundPool.load(context, R.raw.zero, 1);
         one = soundPool.load(context, R.raw.one, 1);
         two = soundPool.load(context, R.raw.two, 1);
         three = soundPool.load(context, R.raw.three, 1);
@@ -267,6 +271,14 @@ public class SoundManager extends AppCompatActivity {
 
             case 43:
                 soundPool.play(tryagain, volumeLeft, volumeRight, 1, 0, 1);
+                break;
+
+            case 44:
+                soundPool.play(runn, volumeLeft, volumeRight,1, 0, 1);
+                break;
+
+            case 100:
+                soundPool.play(zero, volumeLeft, volumeRight, 1, 0, 1);
                 break;
 
             case 101:

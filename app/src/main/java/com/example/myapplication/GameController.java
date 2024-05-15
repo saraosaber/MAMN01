@@ -43,7 +43,6 @@ public class GameController implements Runnable {
 
     public void startGame() {
         isStarted = true;
-        System.out.println("Start!!");
         player.resume();
 
         try {
@@ -51,7 +50,6 @@ public class GameController implements Runnable {
             TimeUnit.MILLISECONDS.sleep(4000);
             sm.playSound(running, 1, 1); // looped
             TimeUnit.MILLISECONDS.sleep(2000);
-            System.out.println("Start!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -88,39 +86,30 @@ public class GameController implements Runnable {
 
         // Play the sound effects
         int score = obstacles.getCompletedObstacles();
-        if(score <= 1) {
-            sm.playSound(8, 1, 1);
-            waitPlease(5000);
+        if(score > obstacles.getHighScore()) {
+            obstacles.setHighScore(score);
+            waitPlease(1000);
+            sm.playSound(39, 1, 1); // "New highscore..."
+            waitPlease(2200);
 
-        } else {
-            if(score > obstacles.getHighScore()) {
-                obstacles.setHighScore(score);
-                waitPlease(1000);
-                sm.playSound(39, 1, 1); // "New highscore..."
-                waitPlease(1800);
-
-                System.out.println(score+100);
-                System.out.println(score);
-                sm.playSound((100 +score), 1, 1); // "...Five..." Play the correct number according to SoundManager list
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sm.playSound(42, 1, 1); // "...obstacles"
-                waitPlease(2000);
-            } else {
-                sm.playSound((100 + score), 1, 1); // "...Five..." Play the correct number according to SoundManager list
-                waitPlease(1000);
-
-                sm.playSound(42, 1, 1); // "...obstacles"
-                waitPlease(2000);
-
-                Random ran = new Random();
-                int funnySound = ran.nextInt(10) + 29; // Generates a random number between 29 and 38
-                sm.playSound(funnySound, 1, 1);
-                waitPlease(5000);
+            sm.playSound((100 +score), 1, 1); // "...Five..." Play the correct number according to SoundManager list
+            try {
+                TimeUnit.MILLISECONDS.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            sm.playSound(42, 1, 1); // "...points"
+            waitPlease(2000);
+        } else {
+            sm.playSound((100 + score), 1, 1); // "...Five..." Play the correct number according to SoundManager list
+            waitPlease(1000);
+
+            sm.playSound(42, 1, 1); // "...points"
+            waitPlease(2000);
+            Random ran = new Random();
+            int funnySound = ran.nextInt(10) + 29; // Generates a random number between 29 and 38
+            sm.playSound(funnySound, 1, 1);
+            waitPlease(5000);
         }
         sm.playSound(10, 1, 1);
     }

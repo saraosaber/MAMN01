@@ -38,12 +38,16 @@ public class Obstacles implements Runnable {
             }
             if(!firstGame) {
                 nextObstacle();
-                completedObstacles++;
             }
+            if(!Thread.currentThread().isInterrupted()) completedObstacles++; // If completed obstacle increase score
         }
     }
 
     private void nextObstacle() {
+        if(completedObstacles == 0) {
+            sm.playSound(44 ,1,1);
+            waitPlease(2000);
+        }
         int maxMilliseconds = 4000;
         int randomMilliseconds = (int) (maxMilliseconds * getDifficultyMultiplier());
 
@@ -57,6 +61,7 @@ public class Obstacles implements Runnable {
             startVerticalObstacle();
         }
     }
+
 
     private double getDifficultyMultiplier() {
         if (completedObstacles < 5) {
@@ -114,7 +119,8 @@ public class Obstacles implements Runnable {
             Thread.currentThread().interrupt();
         }
 
-        sm.playSound(16, (float) 0.3, (float) 0.3);
+        // Completed obstacle
+        sm.playSound(16, 1, 1);
         v.vibrate(20);
     }
 
@@ -151,7 +157,8 @@ public class Obstacles implements Runnable {
         while ((direction == RIGHT && !player.isRight()) || (direction == LEFT && !player.isLeft())) {
             waitPlease(400);
         }
-        sm.playSound(16,0.3f,0.3f);
+        v.vibrate(20);
+        sm.playSound(16,1,1);
     }
 
     private void startWalkthrough() {
@@ -181,26 +188,6 @@ public class Obstacles implements Runnable {
 
         waitPlease(2000);
         firstGame = false;
-    }
-
-
-    /* REMOVE THIS LATER IF WE DONT WANT USER TO "die" WHILE DOING A WALKTHROGUH*/
-    private boolean horizontalWalkthrough(int direction) {
-        playHorizontalObstacle(direction);
-        try {
-            TimeUnit.MILLISECONDS.sleep(1500); // Give user time to tilt
-        } catch (InterruptedException e) {
-            return false;
-        }
-
-        boolean success = direction == RIGHT ? player.isLeft() : player.isRight();
-        if (!success) {
-            sm.playSound(2, 1, 1); // Fail sound
-        } else {
-            sm.playSound(16, (float) 0.3, (float) 0.3); // Success sound
-            v.vibrate(20); // Vibrate
-        }
-        return success;
     }
 
     public int getHighScore() {
