@@ -17,8 +17,6 @@ public class MainActivity extends AppCompatActivity {
     private Thread gameControllerThread;
     private PowerManager.WakeLock wakeLock;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

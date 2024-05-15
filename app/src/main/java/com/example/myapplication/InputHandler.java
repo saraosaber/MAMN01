@@ -40,55 +40,6 @@ public class InputHandler implements View.OnTouchListener, SensorEventListener {
         return gestureDetector.onTouchEvent(event);
     }
 
-    /* OLD VERSION
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            float threshold = 0.5f; // Adjust this threshold as needed
-
-
-            // Handle gyroscope events
-            if (event.values[1] > threshold) {
-                // Gyroscope tilted to the right
-                if (inputListener != null) {
-                    inputListener.onTiltRight();
-                }
-            } else if (event.values[1] < -threshold) {
-                // Gyroscope tilted to the left
-                if (inputListener != null) {
-                    inputListener.onTiltLeft();
-                }
-            }
-        }
-    } */
-
-
-    /* Only gyroscope
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            // Handle gyroscope events
-            float angularVelocityY = event.values[1];
-
-            // Integrate angular velocity to get the tilt angle
-            tiltAngle += angularVelocityY * (float) (event.timestamp - lastTimestamp) / 1e9f;
-
-            // Limit the tilt angle to -PI/2 to PI/2
-            tiltAngle = (float) Math.max(-Math.PI / 2, Math.min(tiltAngle, Math.PI / 2));
-            lastTimestamp = event.timestamp;
-
-            // Check if tilt is left, right, or none
-            if (tiltAngle > THRESHOLD_ANGLE) {
-                notifyTiltListener(TiltDirection.RIGHT);
-            } else if (tiltAngle < -THRESHOLD_ANGLE) {
-                notifyTiltListener(TiltDirection.LEFT);
-            } else {
-                notifyTiltListener(TiltDirection.NONE);
-            }
-        }
-    }
-    */
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {

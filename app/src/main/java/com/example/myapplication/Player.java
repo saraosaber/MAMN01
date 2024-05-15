@@ -26,7 +26,6 @@ public class Player implements Runnable, InputHandler.InputListener  {
     private boolean readyRestart = false;
     private boolean clicked = false;
 
-
     public Player(SoundManager sm, Vibrator v) {
         stateVertical = RUNNING;
         stateHorizontal = RUNNING;
@@ -92,7 +91,6 @@ public class Player implements Runnable, InputHandler.InputListener  {
     public void pause() {
         restartMode = true;
     }
-
     public boolean isReadyRestart(){
         return readyRestart;
     }
@@ -113,20 +111,16 @@ public class Player implements Runnable, InputHandler.InputListener  {
     public boolean isLeft() {
         return stateHorizontal == LEFT;
     }
-
     public boolean isRight() {
         return stateHorizontal == RIGHT;
     }
-
     public boolean isJumping() {
         return stateVertical == UP;
     }
     public boolean hasClicked() { return clicked; }
-
     public void setClicked(boolean clicked) {
         this.clicked = clicked;
     }
-
     public boolean isDucking() {
         return stateVertical == DOWN;
     }
